@@ -12,7 +12,7 @@ contract OffURIUNChangeable is ERC721URIStorage {
      * - kono contruct wo deproy shita address you hensuu
      */
     address public owner;
-
+ 
     //init
     constructor() ERC721 ("OffURIUNChangeable", "OFFU") {
         owner = _msgSender(); //toranzakusyon sousinsya no address
