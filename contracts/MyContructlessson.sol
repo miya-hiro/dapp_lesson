@@ -25,13 +25,15 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
 
     /**
      * @dev
-     * - 状態変数
+     * チケットの構造体
      */
-    //チケットの有効期限
-    string expire;
-    //使用したかどうか
-    bool isUsed;
+     struct TicketInfo {
+        string expirationDate;
+        bool isUsed;
+    }
  
+    TicketInfo ticket_info = TicketInfo('2023-10-10', false);
+
     //init
     constructor() ERC721 ("MyContructlessson", "MYLESSON") {
         // expire = '今日たす３年'; //toranzakusyon sousinsya no address
@@ -67,12 +69,21 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
         emit TokenURIChanged(_msgSender(), newTokenId, jsonFile);
     }
 
+   /**
+     * @dev
+     * - 既存のトークンIDのURIをUsed用に変更
+     */
+    function setIsUsed() public onlyOwner {
+
+        ticket_info.isUsed = true;    
+    }
+
     /**
      * @dev
      * - URIプレフィックスの設定
      */
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://bafybeigyod7ldrnytkzrw45gw2tjksdct6qaxnsc7jdihegpnk2kskpt7a/";
+        return "ipfs://bafybeiedw3zmpjp2hjwwawd4dxbdf66kysv3zf7nohpwz3y4jvtqfswxfm/";
     }
 
     /**
@@ -83,13 +94,15 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
     //     require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent token");
 
     //     string memory baseURI = _baseURI();
+    //     string memory used = '';
 
-        //Implement the features you want to add
-        //Imagine there is already structure called TicketInfo that stores information of NFTs and "used" NFT has zero index in the collection
-        // uint256 tokenId = _tokenId;
-        // TicketInfo storage ticket = ticketInfo[tokenId];
-        // if(ticket.expirationDate < now || ticket.isUsed) tokenId = 0;
+    //     // Implement the features you want to add
+    //     // Imagine there is already structure called TicketInfo that stores information of NFTs and "used" NFT has zero index in the collection
+    //     uint256 tokenId = _tokenId;
+    //     TicketInfo storage ticket = TicketInfo[tokenId];
+    //     // if(ticket.expirationDate < now || ticket.isUsed) tokenId = 0;
+    //     if(ticket.isUsed == true) tokenId = 0;
 
-        // return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
+    //     return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, 'metadata', tokenId.toString()), '.json') : "";
     // }
 }
