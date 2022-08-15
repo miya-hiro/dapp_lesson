@@ -10,6 +10,8 @@ import "@openzeppelin/contracts@4.6.0/utils/Strings.sol";
 
 contract MyContructlessson is ERC721URIStorage, Ownable {
 
+    bool public isUsed;
+
     /**
      * @dev
      * - URI設定時、誰が何のURIを設定したか記録する
@@ -23,16 +25,16 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    /**
-     * @dev
-     * チケットの構造体
-     */
-     struct TicketInfo {
-        string expirationDate;
-        bool isUsed;
-    }
+    // /**
+    //  * @dev
+    //  * チケットの構造体
+    //  */
+    //  struct TicketInfo {
+    //     string expirationDate;
+    //     bool isUsed;
+    // }
  
-    TicketInfo ticket_info = TicketInfo('2023-10-10', false);
+    // TicketInfo ticket_info = TicketInfo('2023-10-10', false);
 
     //init
     constructor() ERC721 ("MyContructlessson", "MYLESSON") {
@@ -75,7 +77,7 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
      */
     function setIsUsed() public onlyOwner {
 
-        ticket_info.isUsed = true;    
+        isUsed = true;    
     }
 
     /**
@@ -89,20 +91,27 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
     /**
      * - オーバーライド
      */
-    // function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+    function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+    
+        require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent token");
 
-    //     require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent token");
-
-    //     string memory baseURI = _baseURI();
-    //     string memory used = '';
+        string memory baseURI = _baseURI();
 
     //     // Implement the features you want to add
     //     // Imagine there is already structure called TicketInfo that stores information of NFTs and "used" NFT has zero index in the collection
-    //     uint256 tokenId = _tokenId;
-    //     TicketInfo storage ticket = TicketInfo[tokenId];
-    //     // if(ticket.expirationDate < now || ticket.isUsed) tokenId = 0;
-    //     if(ticket.isUsed == true) tokenId = 0;
+        uint256 tokenId = _tokenId;
+        // TicketInfo storage ticket = TicketInfo;
 
-    //     return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, 'metadata', tokenId.toString()), '.json') : "";
-    // }
+        // emit eventDebugger('here', ticket);
+
+        // if(ticket.expirationDate < now || ticket.isUsed) tokenId = 0;
+        // if(ticket.isUsed == true) tokenId = 0;
+
+        if(isUsed == true) {
+            return string(abi.encodePacked(baseURI, "/", Strings.toString(tokenId), ".json"));
+        } else {
+            return string(abi.encodePacked(baseURI, "/", Strings.toString(tokenId), "-used.json"));
+        }
+        // return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, 'metadata', tokenId.toString()), '.json') : "";
+    }
 }
