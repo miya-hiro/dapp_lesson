@@ -89,11 +89,11 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
      * - URIプレフィックスの設定
      */
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://bafybeiedw3zmpjp2hjwwawd4dxbdf66kysv3zf7nohpwz3y4jvtqfswxfm/";
+        return "ipfs://bafybeicsy2u367vafyfps5uiilhc6vxnmwxglw2yycbxcxolinupowrtbu/";
     }
 
     /**
-     * - オーバーライド
+     * - tokenUriを返すメソッドをオーバーライド
      */
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
     
@@ -101,18 +101,17 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
 
         string memory baseURI = _baseURI();
 
-    //     // Implement the features you want to add
-    //     // Imagine there is already structure called TicketInfo that stores information of NFTs and "used" NFT has zero index in the collection
+        // Implement the features you want to add
+        // Imagine there is already structure called TicketInfo that stores information of NFTs and "used" NFT has zero index in the collection
         uint256 tokenId = _tokenId;
         TicketInfo storage ticket = ticketInfos[tokenId];
 
         // if(ticket.expirationDate < now || ticket.isUsed) tokenId = 0;
 
         if(ticket.isUsed == true) {
-            return  string(abi.encodePacked(baseURI, 'metadata0.json'));
+            return  string(abi.encodePacked(baseURI, 'metadata', Strings.toString(tokenId), '-used.json'));
         } else {
             return  string(abi.encodePacked(baseURI, 'metadata', Strings.toString(tokenId), '.json'));
         }
-        // return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, 'metadata', tokenId.toString()), '.json') : "";
     }
 }
