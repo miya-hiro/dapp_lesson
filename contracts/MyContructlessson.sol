@@ -9,7 +9,7 @@ import "@openzeppelin/contracts@4.6.0/utils/Counters.sol";
 import "@openzeppelin/contracts@4.6.0/utils/Strings.sol";
 
 contract MyContructlessson is ERC721URIStorage, Ownable {
- 
+
     /**
      * @dev
      * - URI設定時、誰が何のURIを設定したか記録する
@@ -29,7 +29,7 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
      */
      struct TicketInfo {
         uint id256;
-        string expirationDate;
+        uint expirationDate;
         bool isUsed;
     }
  
@@ -37,18 +37,9 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
 
     //init
     constructor() ERC721 ("MyContructlessson", "MYLESSON") {
-        TicketInfo memory zeroTicketInfo = TicketInfo(0, '2023-10-10', false);
+        TicketInfo memory zeroTicketInfo = TicketInfo(0,  block.timestamp, false);
         ticketInfos.push(zeroTicketInfo);
     }
-
-    // /**
-    //  * @dev
-    //  * - kono contruct wo deproy shita address omly
-    //  */
-    // modifier onlyOwner {
-    //     require(owner == _msgSender(), "Caller in not the owner.");
-    //     _;
-    // }
 
     /**
      * @dev
@@ -68,7 +59,7 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
 
         _setTokenURI(newTokenId, jsonFile);
 
-        TicketInfo memory newTicketInfo = TicketInfo(newTokenId, '2023-10-10', false);
+        TicketInfo memory newTicketInfo = TicketInfo(newTokenId,  block.timestamp + 1 hours, false);
         ticketInfos.push(newTicketInfo);
 
         emit TokenURIChanged(_msgSender(), newTokenId, jsonFile);
@@ -97,7 +88,7 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
      */
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
     
-        require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent tokennnnn");
+        require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent token");
 
         string memory baseURI = _baseURI();
 
@@ -106,7 +97,9 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
         uint256 tokenId = _tokenId;
         TicketInfo storage ticket = ticketInfos[tokenId];
 
-        // if(ticket.expirationDate < now || ticket.isUsed) tokenId = 0;
+        // if(ticket.expirationDate < block.timestamp && ticket.isUsed == false) {
+        //     ticket.isUsed = true;    
+        // }
 
         if(ticket.isUsed == true) {
             return  string(abi.encodePacked(baseURI, 'metadata', Strings.toString(tokenId), '-used.json'));
