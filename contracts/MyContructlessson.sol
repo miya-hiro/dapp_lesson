@@ -97,11 +97,7 @@ contract MyContructlessson is ERC721URIStorage, Ownable {
         uint256 tokenId = _tokenId;
         TicketInfo storage ticket = ticketInfos[tokenId];
 
-        // if(ticket.expirationDate < block.timestamp && ticket.isUsed == false) {
-        //     ticket.isUsed = true;    
-        // }
-
-        if(ticket.isUsed == true) {
+        if(ticket.isUsed == true || ticket.expirationDate < block.timestamp) {
             return  string(abi.encodePacked(baseURI, 'metadata', Strings.toString(tokenId), '-used.json'));
         } else {
             return  string(abi.encodePacked(baseURI, 'metadata', Strings.toString(tokenId), '.json'));
